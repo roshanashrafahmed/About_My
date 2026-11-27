@@ -11,6 +11,7 @@ import Skills from './components/Skills.jsx';
 import Contact from './components/Contact.jsx';
 import Footer from './components/Footer.jsx';
 import ToTopButton from './components/ToTopButton.jsx';
+import Chatbot from './components/Chatbot.jsx';
 import ThemePanel from './components/ThemePanel.jsx';
 import { isOwnerMode, logView } from './firebase.js';
 import { CORNERS, DEFAULT_SETTINGS, FONTS, TEXT_SIZES, loadFonts, readSettings, saveSettings } from './themeOptions.js';
@@ -158,7 +159,8 @@ export default function App() {
       <Skills />
       <Contact />
       <Footer />
-      <ToTopButton />
+      <ToTopButton left={settings.chatbot} />
+      {settings.chatbot && <Chatbot />}
     </>
   );
 }

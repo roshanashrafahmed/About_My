@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 const RING_CIRCUMFERENCE = 144.5;
 const TEXT_RING_CIRCUMFERENCE = 2 * Math.PI * 42;
 
-export default function ToTopButton() {
+export default function ToTopButton({ left = false }) {
   const [visible, setVisible] = useState(false);
   const progressRef = useRef(null);
   const textMaskRef = useRef(null);
@@ -29,7 +29,7 @@ export default function ToTopButton() {
   return (
     <button
       id="toTop"
-      className={`to-top${visible ? ' visible' : ''}`}
+      className={`to-top${visible ? ' visible' : ''}${left ? ' to-top--left' : ''}`}
       aria-label="Back to top"
       onClick={scrollToTop}
     >

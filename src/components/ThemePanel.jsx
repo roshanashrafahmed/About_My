@@ -43,7 +43,7 @@ function Switch({ label, hint, checked, onChange }) {
 
 export default function ThemePanel({ open, onClose, settings, updateSettings, resetSettings }) {
   const closeRef = useRef(null);
-  const { mode, accent, font, textSize, corners, motion, cursor } = settings;
+  const { mode, accent, font, textSize, corners, motion, cursor, chatbot } = settings;
 
   // Load every font once the panel opens so the previews render in their own typeface.
   useEffect(() => {
@@ -158,10 +158,11 @@ export default function ThemePanel({ open, onClose, settings, updateSettings, re
         </section>
 
         <section className="theme-panel-section">
-          <h3 className="theme-panel-label">Motion &amp; cursor</h3>
+          <h3 className="theme-panel-label">Motion, cursor &amp; chat</h3>
           <div className="theme-switch-list">
             <Switch label="Animations" hint="Page transitions and moving effects" checked={motion} onChange={(v) => updateSettings({ motion: v })} />
             <Switch label="Custom cursor" hint="Coloured dot that follows the mouse" checked={cursor} onChange={(v) => updateSettings({ cursor: v })} />
+            <Switch label="Chatbot" hint="AI assistant (back-to-top moves left)" checked={chatbot} onChange={(v) => updateSettings({ chatbot: v })} />
           </div>
         </section>
 

@@ -48,6 +48,7 @@ export const DEFAULT_SETTINGS = {
   corners: 'rounded',
   motion: true,
   cursor: true,
+  chatbot: true,
 };
 
 const SETTINGS_KEY = 'themeSettings';
