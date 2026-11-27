@@ -1,35 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Roshan Ashraf Ahmed | Fullstack Developer</title>
-<meta name="description" content="Portfolio of Roshan Ashraf Ahmed, Fullstack Developer specializing in Python, Django, JavaScript and React." />
-<link rel="icon" type="image/png" href="./assets/mylogo.png" />
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Caveat:wght@600&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-(function () {
-  var s = {};
-  try { s = JSON.parse(localStorage.getItem('themeSettings')) || {}; } catch (e) {}
-  var root = document.documentElement;
-  var mode = s.mode === 'dark' || s.mode === 'system' ? s.mode : 'light';
-  var theme = mode === 'system' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : mode;
-  root.setAttribute('data-theme', theme);
-  var accent = s.accent || localStorage.getItem('accent');
-  if (accent && accent !== 'default') root.setAttribute('data-accent', accent);
-  var sizes = { sm: '14px', md: '16px', lg: '18px' };
-  if (sizes[s.textSize]) root.style.fontSize = sizes[s.textSize];
-  var radii = { sharp: '6px', rounded: '20px', pill: '34px' };
-  if (radii[s.corners]) root.style.setProperty('--radius', radii[s.corners]);
-  if (s.motion === false) root.setAttribute('data-reduce-motion', '');
-})();
-</script>
-</head>
-<body>
-<div id="root"></div>
-<script type="module" src="./src/main.jsx"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Roshan Ashraf Ahmed | Fullstack Developer</title>
+    <meta name="description" content="Portfolio of Roshan Ashraf Ahmed, Fullstack Developer specializing in Python, Django, JavaScript and React." />
+    <link rel="icon" type="image/png" href="/About_My/assets/mylogo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Caveat:wght@600&display=swap" rel="stylesheet" />
+    <script>
+      (function () {
+        var s = {};
+        try { s = JSON.parse(localStorage.getItem('themeSettings')) || {}; } catch (e) {}
+        var root = document.documentElement;
+        var mode = s.mode === 'dark' || s.mode === 'system' ? s.mode : 'light';
+        var theme = mode === 'system'
+          ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+          : mode;
+        root.setAttribute('data-theme', theme);
+        var accent = s.accent || localStorage.getItem('accent');
+        if (accent && accent !== 'default') root.setAttribute('data-accent', accent);
+        var sizes = { sm: '14px', md: '16px', lg: '18px' };
+        if (sizes[s.textSize]) root.style.fontSize = sizes[s.textSize];
+        var radii = { sharp: '6px', rounded: '20px', pill: '34px' };
+        if (radii[s.corners]) root.style.setProperty('--radius', radii[s.corners]);
+        if (s.motion === false) root.setAttribute('data-reduce-motion', '');
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>

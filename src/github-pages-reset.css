@@ -1,0 +1,28 @@
+/* ===== Reset & Base ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+@property --progress {
+  syntax: '<percentage>'; inherits: false; initial-value: 0%;
+}
+
+:root {
+  --bg: #ffffff; --bg-alt: #f5f8fc; --text: #000712; --text-soft: #5b6472;
+  --brand: #286f6c; --brand-2: #4a9c98; --brand-3: #ffb648;
+  --card: #ffffff; --border: #e6ebf2;
+  --shadow: 0 20px 45px -20px rgba(20, 40, 90, 0.16);
+  --radius: 20px; --nav-h: 78px;
+}
+:root[data-theme="dark"] {
+  --bg: #0b0f14; --bg-alt: #11161d; --text: #eef2f6; --text-soft: #9aa5b1;
+  --brand: #4a9c98; --brand-2: #6fc2bd; --brand-3: #ffb648;
+  --card: #131a22; --border: #232b35;
+  --shadow: 0 20px 45px -20px rgba(0, 0, 0, 0.55);
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font, 'Poppins', system-ui, sans-serif);
+  background: var(--bg); color: var(--text); overflow-x: hidden; line-height: 1.6;
+}
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+img { max-width: 100%; display: block; }
