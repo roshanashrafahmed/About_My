@@ -158,19 +158,19 @@ export default function Hero() {
               </ul>
             </div>
 
-            <a href="/assets/Roshan-Ashraf-Ahmed-Resume.pdf" download className="btn btn-primary relative inline-flex self-start items-center gap-2 px-[26px] py-[13px] rounded-full font-semibold text-[0.95rem] text-white">{t.hero.resume} <span aria-hidden="true">→</span></a>
+            <a href={`${import.meta.env.BASE_URL}assets/Roshan-Ashraf-Ahmed-Resume.pdf`} download className="btn btn-primary relative inline-flex self-start items-center gap-2 px-[26px] py-[13px] rounded-full font-semibold text-[0.95rem] text-white">{t.hero.resume} <span aria-hidden="true">→</span></a>
           </div>
 
           <div className="hero-stage">
             <div className="hero-photo-wrap" ref={photoWrapRef}>
               <img
-                src="/assets/roshan.png"
+                src={`${import.meta.env.BASE_URL}assets/roshan.png`}
                 alt="Roshan Ashraf Ahmed"
                 className="hero-photo hero-photo-light"
                 onError={(e) => e.currentTarget.parentElement.classList.add('img-missing')}
               />
               <img
-                src="/assets/roshan-dark.png"
+                src={`${import.meta.env.BASE_URL}assets/roshan-dark.png`}
                 alt=""
                 aria-hidden="true"
                 className="hero-photo hero-photo-dark"
