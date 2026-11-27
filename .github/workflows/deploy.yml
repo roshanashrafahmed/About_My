@@ -1,0 +1,75 @@
+
+name: Deploy Portfolio
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Build and Deploy Portfolio
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      # Step 1: Download repository source code
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      # Step 2: Install Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      # Step 3: Show installed versions
+      - name: Verify Node.js and npm
+        run: |
+          node --version
+          npm --version
+
+      # Step 4: Install project dependencies
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      # Step 5: Build React + Vite application
+      - name: Build website
+        run: npm run build
+
+      # Step 6: Verify the production build
+      - name: Verify build output
+        run: |
+          test -f dist/index.html
+          test -d dist/assets
+          echo "Production build generated successfully."
+
+      # Step 7: Configure GitHub Pages
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      # Step 8: Upload production files
+      - name: Upload production files
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+      # Step 9: Deploy website
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
