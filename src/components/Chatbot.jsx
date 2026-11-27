@@ -38,6 +38,27 @@ async function askGemini(history) {
   return text;
 }
 
+function RobotIcon({ size = 30 }) {
+  return (
+    <svg className="robot-icon" width={size} height={size} viewBox="0 0 64 64" fill="none" aria-hidden="true">
+      <g className="robot-antenna">
+        <line x1="32" y1="6" x2="32" y2="16" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+        <circle className="robot-antenna-tip" cx="32" cy="6" r="4" fill="#ffb648" />
+      </g>
+      <rect x="10" y="16" width="44" height="34" rx="12" fill="currentColor" />
+      <rect x="4" y="27" width="6" height="12" rx="3" fill="currentColor" />
+      <rect x="54" y="27" width="6" height="12" rx="3" fill="currentColor" />
+      <rect x="16" y="23" width="32" height="20" rx="8" className="robot-face" />
+      <g className="robot-eyes">
+        <circle cx="25" cy="32" r="3.6" className="robot-eye" />
+        <circle cx="39" cy="32" r="3.6" className="robot-eye" />
+      </g>
+      <path d="M27 38.5 Q32 41.5 37 38.5" stroke="#4fe3d6" strokeWidth="2.2" strokeLinecap="round" fill="none" />
+      <rect x="24" y="52" width="16" height="6" rx="3" fill="currentColor" opacity=".7" />
+    </svg>
+  );
+}
+
 export default function Chatbot() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -84,7 +105,7 @@ export default function Chatbot() {
     <>
       <div className={`chatbot-panel${open ? ' open' : ''}`} role="dialog" aria-label="Chat with Roshan's assistant" inert={open ? undefined : ''}>
         <div className="chatbot-head">
-          <span className="chatbot-avatar" aria-hidden="true">R</span>
+          <span className="chatbot-avatar" aria-hidden="true"><RobotIcon size={24} /></span>
           <div className="chatbot-head-text">
             <span className="chatbot-title">Ask about Roshan</span>
             <span className="chatbot-sub">AI assistant · powered by Gemini</span>
@@ -135,7 +156,7 @@ export default function Chatbot() {
         {open ? (
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
         ) : (
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h.01"/><path d="M12 10h.01"/><path d="M16 10h.01"/></svg>
+          <RobotIcon size={34} />
         )}
       </button>
     </>
