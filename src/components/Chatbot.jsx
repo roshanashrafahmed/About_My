@@ -38,28 +38,16 @@ async function askGemini(history) {
   return text;
 }
 
-function RobotIcon({ size = 30 }) {
-  return (
-    <svg className="robot-icon" width={size} height={size} viewBox="0 0 64 64" fill="none" aria-hidden="true">
-      <g className="robot-antenna">
-        <line x1="32" y1="6" x2="32" y2="16" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-        <circle className="robot-antenna-tip" cx="32" cy="6" r="4" fill="#ffb648" />
-      </g>
-      <rect x="10" y="16" width="44" height="34" rx="12" fill="currentColor" />
-      <rect x="4" y="27" width="6" height="12" rx="3" fill="currentColor" />
-      <rect x="54" y="27" width="6" height="12" rx="3" fill="currentColor" />
-      <rect x="16" y="23" width="32" height="20" rx="8" className="robot-face" />
-      <g className="robot-eyes">
-        <circle cx="25" cy="32" r="3.6" className="robot-eye" />
-        <circle cx="39" cy="32" r="3.6" className="robot-eye" />
-      </g>
-      <path d="M27 38.5 Q32 41.5 37 38.5" stroke="#4fe3d6" strokeWidth="2.2" strokeLinecap="round" fill="none" />
-      <rect x="24" y="52" width="16" height="6" rx="3" fill="currentColor" opacity=".7" />
-    </svg>
-  );
+const ROBOT_URL = `${import.meta.env.BASE_URL}assets/chatbot-robot.png`;
+
+function RobotIcon({ className = '' }) {
+  return <img src={ROBOT_URL} alt="" className={`robot-img ${className}`} draggable="false" />;
 }
 
-export default function Chatbot() {
+const CLICK_DELAY = 300; // ms to wait for a second click before treating it as a single click
+const LAUNCH_MS = 1400;  // must match the robot-launch animation length
+
+export default function Chatbot({ onDisable }) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -67,6 +55,33 @@ export default function Chatbot() {
   const listRef = useRef(null);
   const inputRef = useRef(null);
   const sessionRef = useRef(0);
+  const clickTimer = useRef(null);
+  const lastClick = useRef(0);
+  const [launching, setLaunching] = useState(false);
+
+  useEffect(() => () => clearTimeout(clickTimer.current), []);
+
+  const onLauncherClick = (e) => {
+    if (launching) return;
+    if (open) { setOpen(false); return; }
+    // keyboard activation (detail 0) opens immediately
+    if (e.detail === 0) { setOpen(true); return; }
+    // track timing ourselves: mobile taps don't reliably report detail === 2
+    const now = Date.now();
+    const isDouble = now - lastClick.current < CLICK_DELAY;
+    lastClick.current = now;
+    clearTimeout(clickTimer.current);
+    if (isDouble) {
+      lastClick.current = 0;
+      // double click / double tap: blast off like a rocket, then switch the chatbot off
+      setLaunching(true);
+      const reduce = document.documentElement.hasAttribute('data-reduce-motion')
+        || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      clickTimer.current = setTimeout(() => onDisable?.(), reduce ? 0 : LAUNCH_MS);
+      return;
+    }
+    clickTimer.current = setTimeout(() => setOpen(true), CLICK_DELAY);
+  };
 
   useEffect(() => {
     if (listRef.current) listRef.current.scrollTop = listRef.current.scrollHeight;
@@ -117,7 +132,7 @@ export default function Chatbot() {
     <>
       <div className={`chatbot-panel${open ? ' open' : ''}`} role="dialog" aria-label="Chat with Roshan's assistant" inert={open ? undefined : ''}>
         <div className="chatbot-head">
-          <span className="chatbot-avatar" aria-hidden="true"><RobotIcon size={24} /></span>
+          <span className="chatbot-avatar" aria-hidden="true"><RobotIcon className="robot-img--avatar" /></span>
           <div className="chatbot-head-text">
             <span className="chatbot-title">Ask about Roshan</span>
             <span className="chatbot-sub">AI assistant · powered by Gemini</span>
@@ -165,15 +180,23 @@ export default function Chatbot() {
 
       <button
         type="button"
-        className={`chatbot-launcher${open ? ' open' : ''}`}
-        aria-label={open ? 'Close chat' : 'Open chat'}
+        className={`chatbot-launcher${open ? ' open' : ' has-robot'}${launching ? ' launching' : ''}`}
+        aria-label={open ? 'Close chat' : 'Open chat (double-click to hide)'}
         aria-expanded={open}
-        onClick={() => setOpen((o) => !o)}
+        onClick={onLauncherClick}
       >
         {open ? (
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
         ) : (
-          <RobotIcon size={34} />
+          <>
+            <span className="robot-tip" aria-hidden="true">
+              <span className="robot-tip-main">Click me! 👋</span>
+              <span className="robot-tip-sub">Double-tap to<br />turn me off</span>
+            </span>
+            <span className="robot-glow" aria-hidden="true" />
+            <span className="robot-flame" aria-hidden="true" />
+            <RobotIcon className="robot-img--launcher" />
+          </>
         )}
       </button>
     </>

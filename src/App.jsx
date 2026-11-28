@@ -160,7 +160,7 @@ export default function App() {
       <Contact />
       <Footer />
       <ToTopButton left={settings.chatbot} />
-      {settings.chatbot && <Chatbot />}
+      {settings.chatbot && <Chatbot onDisable={() => updateSettings({ chatbot: false })} />}
     </>
   );
 }

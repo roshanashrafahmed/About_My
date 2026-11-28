@@ -145,7 +145,7 @@ export default function Hero() {
                       key={tech.name}
                       className="hero-globe-lang absolute font-mono font-semibold whitespace-nowrap"
                       style={{
-                        '--x': `${Math.round(Math.cos(angle) * 150)}px`,
+                        '--cos': Math.cos(angle).toFixed(3),
                         '--y': `${Math.round(Math.sin(angle) * 82)}px`,
                         '--i': i,
                         '--c': tech.color,

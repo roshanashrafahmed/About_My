@@ -701,6 +701,10 @@ img { max-width: 100%; display: block; }
 }
 
 .hero-globe-langs { list-style: none; margin: 0; padding: 0; }
+/* Horizontal orbit radius shrinks with the globe's width so the outermost
+   badges (HTML / JavaScript) never spill off a narrow screen. */
+.hero-globe { container-type: inline-size; }
+.hero-globe-lang { --x: calc(var(--cos) * min(150px, 50cqw - 58px)); }
 .hero-globe-lang {
   top: 50%;
   left: 50%;
@@ -1545,31 +1549,118 @@ img { max-width: 100%; display: block; }
   .to-top.to-top--left { left: 16px; bottom: 16px; }
 }
 
-/* ===== Chatbot robot icon animation ===== */
-.robot-icon { overflow: visible; }
-.chatbot-launcher .robot-icon { color: #fff; animation: robot-float 3s ease-in-out infinite; }
-.robot-face { fill: #10202a; }
-.robot-eye { fill: #4fe3d6; transform-box: fill-box; transform-origin: center; animation: robot-blink 4s infinite; }
-.robot-eyes { animation: robot-look 6s ease-in-out infinite; }
-.robot-antenna { transform-box: view-box; transform-origin: 32px 16px; animation: robot-wiggle 2.4s ease-in-out infinite; }
-.robot-antenna-tip { animation: robot-glow 1.2s ease-in-out infinite alternate; }
-.chatbot-launcher:hover .robot-icon { animation: robot-hop .6s ease; }
-@keyframes robot-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
-@keyframes robot-blink { 0%, 44%, 50%, 100% { transform: scaleY(1); } 47% { transform: scaleY(.1); } }
-@keyframes robot-look { 0%, 30%, 100% { transform: translateX(0); } 40%, 55% { transform: translateX(-3px); } 65%, 80% { transform: translateX(3px); } }
-@keyframes robot-wiggle { 0%, 100% { transform: rotate(-10deg); } 50% { transform: rotate(10deg); } }
-@keyframes robot-glow { from { fill: #ffb648; } to { fill: #ff6b6b; } }
-@keyframes robot-hop { 0%, 100% { transform: translateY(0) rotate(0); } 30% { transform: translateY(-6px) rotate(-8deg); } 60% { transform: translateY(0) rotate(6deg); } }
-[data-reduce-motion] .robot-icon,
-[data-reduce-motion] .robot-icon * { animation: none !important; }
+/* ===== Chatbot robot mascot ===== */
+.robot-img { display: block; pointer-events: none; user-select: none; }
+.robot-img--avatar { width: 30px; height: 30px; object-fit: contain; }
+
+/* Launcher: the mascot itself floats in the corner instead of a plain circle */
+.chatbot-launcher.has-robot {
+  width: 74px; height: 74px;
+  touch-action: manipulation;
+  background: none;
+  box-shadow: none;
+  overflow: visible;
+}
+.chatbot-launcher.has-robot::after { display: none; }
+.chatbot-launcher.has-robot:hover { transform: none; }
+.robot-img--launcher {
+  position: relative; z-index: 1;
+  width: 100%; height: 100%; object-fit: contain;
+  filter: drop-shadow(0 10px 12px rgba(20, 40, 90, .35));
+  transform-origin: 50% 90%;
+  animation: robot-float 3s ease-in-out infinite, robot-wave 6s ease-in-out infinite;
+}
+.chatbot-launcher.has-robot:hover .robot-img--launcher { animation: robot-hop .7s ease; }
+.robot-glow {
+  position: absolute; left: 50%; bottom: 2px;
+  width: 56px; height: 56px; margin-left: -28px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(79, 227, 214, .55), rgba(79, 227, 214, 0) 70%);
+  animation: robot-glow-pulse 2.4s ease-in-out infinite;
+}
+@keyframes robot-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes robot-wave { 0%, 70%, 100% { rotate: 0deg; } 76% { rotate: -8deg; } 82% { rotate: 6deg; } 88% { rotate: -5deg; } 94% { rotate: 3deg; } }
+@keyframes robot-hop { 0%, 100% { transform: translateY(0) scale(1); } 35% { transform: translateY(-10px) scale(1.08); } 65% { transform: translateY(0) scale(.97); } }
+@keyframes robot-glow-pulse { 0%, 100% { transform: scale(.85); opacity: .55; } 50% { transform: scale(1.15); opacity: 1; } }
+@media (max-width: 520px) {
+  .chatbot-launcher.has-robot { width: 64px; height: 64px; right: 12px; bottom: 12px; }
+}
+/* Hover speech bubble: sits above the robot's head with a tail pointing down at it */
+.robot-tip {
+  /* compact and kept inside the corner gutter so it never covers footer links */
+  position: absolute; right: -14px; bottom: calc(100% + 10px);
+  width: 112px; box-sizing: border-box;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  text-align: center;
+  padding: 8px 10px 9px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--brand), var(--brand-2));
+  color: #fff;
+  font-size: .8rem; font-weight: 600; line-height: 1; white-space: nowrap;
+  box-shadow: 0 10px 24px -10px rgba(20, 40, 90, .55);
+  opacity: 0; transform: translateY(6px) scale(.85); transform-origin: 60% 100%;
+  transition: opacity .2s ease, transform .25s cubic-bezier(.34, 1.56, .64, 1);
+  pointer-events: none;
+}
+.robot-tip-main { font-size: .82rem; font-weight: 700; }
+.robot-tip-sub { font-size: .66rem; font-weight: 500; line-height: 1.3; opacity: .85; white-space: normal; }
+.robot-tip::after {
+  content: '';
+  position: absolute; right: 44px; top: 100%;
+  border: 7px solid transparent;
+  border-top-color: var(--brand-2);
+  border-bottom: 0;
+}
+.chatbot-launcher.has-robot:hover .robot-tip,
+.chatbot-launcher.has-robot:focus-visible .robot-tip { opacity: 1; transform: none; }
+.chatbot-launcher.launching .robot-tip { opacity: 0; }
+
+/* Double click: rocket launch */
+.robot-flame {
+  position: absolute; left: 50%; top: 88%;
+  width: 22px; height: 0; margin-left: -11px;
+  border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
+  background: linear-gradient(#fff6c2, #ffb648 35%, #ff6b3d 70%, rgba(255, 80, 40, 0));
+  filter: blur(.5px);
+  opacity: 0;
+}
+.chatbot-launcher.launching { pointer-events: none; }
+.chatbot-launcher.launching .robot-glow { animation: none; opacity: 0; transition: opacity .2s; }
+.chatbot-launcher.has-robot.launching .robot-img--launcher,
+.chatbot-launcher.launching .robot-flame { animation: robot-launch 1.4s cubic-bezier(.5, 0, .9, .3) forwards; }
+.chatbot-launcher.launching .robot-flame { animation-name: robot-launch, robot-flame; animation-timing-function: cubic-bezier(.5, 0, .9, .3), ease-in-out; }
+@keyframes robot-launch {
+  0%   { transform: translate(0, 0); }
+  8%   { transform: translate(-2px, 2px); }
+  14%  { transform: translate(2px, 3px); }
+  20%  { transform: translate(-2px, 3px); }
+  28%  { transform: translate(0, 4px); }
+  100% { transform: translate(0, -110vh); }
+}
+@keyframes robot-flame {
+  0%   { height: 0; opacity: 0; }
+  25%  { height: 22px; opacity: 1; }
+  60%  { height: 40px; opacity: 1; }
+  100% { height: 48px; opacity: .9; }
+}
+.chatbot-launcher.launching .robot-img--launcher { rotate: 0deg; }
+
+@media (max-width: 520px) {
+  .robot-tip { right: -4px; }
+  .robot-tip::after { right: 29px; }
+}
+[data-reduce-motion] .robot-img,
+[data-reduce-motion] .robot-glow { animation: none !important; }
 
 /* ===== Keep footer content clear of the floating corner buttons ===== */
-/* Back-to-top ring reaches ~110px from the screen edge, the chatbot ~100px. */
+/* Back-to-top ring reaches ~110px from the screen edge, the chatbot ~100px.
+   On small screens the chatbot's hover card reaches ~195px up, so the footer
+   keeps that band empty. */
 .footer .footer-inner {
   padding-left: clamp(24px, calc(130px - (100vw - 1180px) / 2), 130px);
   padding-right: clamp(24px, calc(130px - (100vw - 1180px) / 2), 130px);
 }
 @media (max-width: 780px) {
   .footer .footer-inner { padding-left: 24px; padding-right: 24px; }
-  .footer { padding-bottom: 110px !important; }
+  .footer { padding-bottom: 210px !important; }
 }
