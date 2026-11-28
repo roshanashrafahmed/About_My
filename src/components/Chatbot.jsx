@@ -66,6 +66,7 @@ export default function Chatbot() {
   const [busy, setBusy] = useState(false);
   const listRef = useRef(null);
   const inputRef = useRef(null);
+  const sessionRef = useRef(0);
 
   useEffect(() => {
     if (listRef.current) listRef.current.scrollTop = listRef.current.scrollHeight;
@@ -89,16 +90,27 @@ export default function Chatbot() {
       setMessages([...next, { role: 'bot', text: 'The chatbot is not configured yet (missing Gemini API key).', error: true }]);
       return;
     }
+    const session = sessionRef.current;
     setBusy(true);
     try {
       const reply = await askGemini(next.filter((m) => !m.error));
+      if (session !== sessionRef.current) return;
       setMessages((prev) => [...prev, { role: 'bot', text: reply }]);
     } catch (err) {
+      if (session !== sessionRef.current) return;
       console.error('Chatbot error:', err);
       setMessages((prev) => [...prev, { role: 'bot', text: 'Sorry, I could not answer right now. Please try again in a moment.', error: true }]);
     } finally {
-      setBusy(false);
+      if (session === sessionRef.current) setBusy(false);
     }
+  };
+
+  const newChat = () => {
+    sessionRef.current += 1;
+    setMessages([]);
+    setInput('');
+    setBusy(false);
+    inputRef.current?.focus();
   };
 
   return (
@@ -110,6 +122,11 @@ export default function Chatbot() {
             <span className="chatbot-title">Ask about Roshan</span>
             <span className="chatbot-sub">AI assistant · powered by Gemini</span>
           </div>
+          {messages.length > 0 && (
+            <button type="button" className="chatbot-close" aria-label="New chat" title="New chat" onClick={newChat}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+            </button>
+          )}
           <button type="button" className="chatbot-close" aria-label="Close chat" onClick={() => setOpen(false)}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
           </button>
